@@ -1,6 +1,7 @@
 import 'package:chat_flutter/features/profile/view/about_page.dart';
 import 'package:chat_flutter/features/profile/view/chat_setting_page.dart';
 import 'package:chat_flutter/features/profile/view/content_preferences_page.dart';
+import 'package:chat_flutter/features/profile/view/f_and_q_page.dart';
 import 'package:chat_flutter/features/profile/view/personal_info_page.dart';
 import 'package:chat_flutter/features/profile/view/privacy_and_security_page.dart';
 import 'package:chat_flutter/features/profile/widgets/menu_item.dart';
@@ -181,6 +182,17 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   AppSpacing.verticalMD,
+                  //F&Q
+                  MenuItem(
+                    title: 'FAQ',
+                    subtitle: 'Frequently asked questions',
+                    icon: IconlyLight.activity,
+                    onTap: () {
+                      context.push(FAndQPage.routePath);
+                    },
+                  ),
+                  AppSpacing.verticalMD,
+
                   MenuItem(
                     title: 'About',
                     subtitle: 'App version and information',

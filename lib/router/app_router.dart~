@@ -61,7 +61,7 @@ class AppRouter {
         builder: (context, state) {
           final chatId = state.extra as Chat;
           return ChatDetailPage(chat: chatId);
-        },
+        }
       ),
     ],
     errorBuilder:

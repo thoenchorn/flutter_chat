@@ -76,6 +76,13 @@ class _TextFieldCustomState extends State<TextFieldCustom>
   }
 
   @override
+  void dispose() {
+    focusNode.dispose();
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(

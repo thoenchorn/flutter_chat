@@ -116,7 +116,7 @@ class _ChatPageState extends State<ChatPage> {
                 final chat = getSampleChats()[index];
                 return ItemChat(
                   onTap: () {
-                    context.push(ChatDetailPage.routePath, extra: chat);
+                    context.push(ChatDetailPage.routePath);
                   },
                   id: chat.id,
                   avatarUrl: chat.avatarUrl,
