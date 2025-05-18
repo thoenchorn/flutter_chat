@@ -1,0 +1,32 @@
+import 'package:chat_flutter/shared/color/app_color.dart';
+import 'package:flutter/material.dart';
+
+class CustomAvatar extends StatefulWidget {
+  const CustomAvatar({
+    super.key,
+    required this.name,
+    this.imageUrl,
+    this.radius,
+  });
+
+  final String name;
+  final String? imageUrl;
+  final double? radius;
+
+  @override
+  State<CustomAvatar> createState() => _CustomAvatarState();
+}
+
+class _CustomAvatarState extends State<CustomAvatar> {
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      foregroundColor: AppColor.white,
+      backgroundColor: AppColor.white,
+      backgroundImage: NetworkImage(
+        "https://ui-avatars.com/api/?name=${widget.name}&background=random&color=fff&size=256",
+      ),
+      radius: widget.radius ?? 24,
+    );
+  }
+}

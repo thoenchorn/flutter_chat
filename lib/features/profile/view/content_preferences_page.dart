@@ -1,0 +1,675 @@
+import 'package:chat_flutter/shared/color/app_color.dart';
+import 'package:chat_flutter/shared/spacing/app_spacing.dart';
+import 'package:chat_flutter/shared/theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
+
+class ContentPreferencesPage extends StatefulWidget {
+  const ContentPreferencesPage({super.key});
+
+  static const String routePath = '/content-preferences';
+
+  @override
+  State<ContentPreferencesPage> createState() => _ContentPreferencesPageState();
+}
+
+class _ContentPreferencesPageState extends State<ContentPreferencesPage> {
+  // Content preferences
+  bool _personalizedRecommendations = true;
+  bool _showTrending = true;
+  bool _adultContent = false;
+  bool _sensitiveContent = false;
+
+  // Selected interests
+  final Map<String, bool> _interests = {
+    'Technology': true,
+    'Sports': false,
+    'Entertainment': true,
+    'Science': true,
+    'Travel': false,
+    'Food': true,
+    'Finance': false,
+    'Art': false,
+    'Gaming': true,
+    'Fashion': false,
+    'Health': true,
+    'Music': true,
+  };
+
+  // Content language preferences
+  String _selectedLanguage = 'English';
+
+  // Feed algorithm settings
+  int _contentDiversity = 1; // 0: Familiar, 1: Balanced, 2: Diverse
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text(
+          'Content Preferences',
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(IconlyLight.arrow_left_2),
+          onPressed: () => Navigator.pop(context),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.grey[100],
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            _buildPreferencesBanner(),
+            _buildAlgorithmTuning(),
+            _buildInterestSelector(),
+            _buildContentFilterSection(),
+            _buildLanguageSection(),
+            _buildDataAndPrivacySection(),
+            const SizedBox(height: AppSpacing.xxl),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreferencesBanner() {
+    return Container(
+      margin: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.teal, Colors.blue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.teal.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(IconlyBold.filter, color: Colors.white, size: 30),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Personalized For You',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Your preferences shape what you see in your feed',
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAlgorithmTuning() {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.xs),
+                decoration: BoxDecoration(
+                  color: Colors.indigo.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  IconlyBold.graph,
+                  color: Colors.indigo,
+                  size: 16,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                'Feed Algorithm',
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  // Show more info about the algorithm
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(IconlyLight.info_square, size: 16),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Content Diversity',
+            style: context.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            'Adjust how varied your content recommendations will be',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Familiar', style: context.textTheme.bodySmall),
+                  Text('Balanced', style: context.textTheme.bodySmall),
+                  Text('Diverse', style: context.textTheme.bodySmall),
+                ],
+              ),
+              Slider(
+                value: _contentDiversity.toDouble(),
+                min: 0,
+                max: 2,
+                divisions: 2,
+                activeColor: AppColor.primary,
+                onChanged: (value) {
+                  setState(() {
+                    _contentDiversity = value.toInt();
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _buildSwitchTile(
+            title: 'Personalized Recommendations',
+            subtitle: 'Allow algorithm to learn from your activity',
+            icon: IconlyLight.user,
+            value: _personalizedRecommendations,
+            onChanged: (value) {
+              setState(() {
+                _personalizedRecommendations = value;
+              });
+            },
+          ),
+          _buildSwitchTile(
+            title: 'Show Trending Content',
+            subtitle: 'Display popular content in your feed',
+            icon: IconlyLight.chart,
+            value: _showTrending,
+            onChanged: (value) {
+              setState(() {
+                _showTrending = value;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInterestSelector() {
+    return _buildSection(
+      title: 'Your Interests',
+      icon: IconlyBold.heart,
+      iconColor: Colors.pink,
+      description: 'Select topics you want to see more of',
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children:
+                _interests.keys.map((interest) {
+                  final isSelected = _interests[interest] ?? false;
+                  return FilterChip(
+                    selected: isSelected,
+                    label: Text(interest),
+                    showCheckmark: false,
+                    avatar:
+                        isSelected
+                            ? Icon(
+                              IconlyBold.tick_square,
+                              size: 16,
+                              color:
+                                  isSelected ? Colors.white : AppColor.primary,
+                            )
+                            : null,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.lg),
+                      side: BorderSide(
+                        color:
+                            isSelected ? Colors.transparent : Colors.grey[300]!,
+                      ),
+                    ),
+                    selectedColor: AppColor.primary,
+                    backgroundColor: Colors.white,
+                    labelStyle: context.textTheme.bodyMedium?.copyWith(
+                      color: isSelected ? Colors.white : Colors.black,
+                      fontWeight:
+                          isSelected ? FontWeight.w500 : FontWeight.normal,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.xs,
+                    ),
+                    onSelected: (value) {
+                      setState(() {
+                        _interests[interest] = value;
+                      });
+                    },
+                  );
+                }).toList(),
+          ),
+        ),
+        Divider(color: Colors.grey[200]),
+        Padding(
+          padding: const EdgeInsets.all(AppSpacing.sm),
+          child: TextButton(
+            onPressed: () {
+              // Navigate to detailed interest selection
+            },
+            child: Text(
+              'Explore More Topics',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: AppColor.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContentFilterSection() {
+    return _buildSection(
+      title: 'Content Filtering',
+      icon: IconlyBold.shield_done,
+      iconColor: Colors.red,
+      description: 'Control what type of content you see',
+      children: [
+        _buildSwitchTile(
+          title: 'Adult Content',
+          subtitle: 'Allow mature content in your feed',
+          icon: IconlyLight.danger,
+          value: _adultContent,
+          onChanged: (value) {
+            setState(() {
+              _adultContent = value;
+            });
+          },
+        ),
+        _buildSwitchTile(
+          title: 'Sensitive Content',
+          subtitle: 'Allow potentially sensitive material',
+          icon: IconlyLight.shield_fail,
+          value: _sensitiveContent,
+          onChanged: (value) {
+            setState(() {
+              _sensitiveContent = value;
+            });
+          },
+        ),
+        _buildActionTile(
+          title: 'Blocked Keywords',
+          subtitle: 'Content with these words won\'t appear',
+          icon: IconlyLight.close_square,
+          onTap: () {
+            // Navigate to blocked keywords screen
+          },
+        ),
+        _buildActionTile(
+          title: 'Content Categories',
+          subtitle: 'Choose categories you don\'t want to see',
+          icon: IconlyLight.category,
+          onTap: () {
+            // Navigate to category filter screen
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageSection() {
+    return _buildSection(
+      title: 'Language',
+      icon: IconlyBold.document,
+      iconColor: Colors.blue,
+      description: 'Manage language preferences',
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Primary Language',
+                style: context.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(AppSpacing.sm),
+                ),
+                child: DropdownButton<String>(
+                  value: _selectedLanguage,
+                  isExpanded: true,
+                  underline: const SizedBox(),
+                  icon: const Icon(IconlyLight.arrow_down_2),
+                  onChanged: (String? value) {
+                    setState(() {
+                      if (value != null) _selectedLanguage = value;
+                    });
+                  },
+                  items:
+                      [
+                        'English',
+                        'Spanish',
+                        'French',
+                        'German',
+                        'Chinese',
+                        'Japanese',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _buildActionTile(
+                title: 'Translation Settings',
+                subtitle: 'Choose when to show translated content',
+                icon: IconlyLight.swap,
+                onTap: () {
+                  // Navigate to translation settings
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDataAndPrivacySection() {
+    return _buildSection(
+      title: 'Data & Privacy',
+      icon: IconlyBold.lock,
+      iconColor: Colors.teal,
+      description: 'Manage how your data is used for recommendations',
+      children: [
+        _buildActionTile(
+          title: 'Reset Preferences',
+          subtitle: 'Clear all preferences and start fresh',
+          icon: IconlyLight.delete,
+          onTap: () {
+            _showResetConfirmationDialog();
+          },
+        ),
+        _buildActionTile(
+          title: 'Data Collection',
+          subtitle: 'Manage what data is used for recommendations',
+          icon: IconlyLight.info_square,
+          onTap: () {
+            // Navigate to data collection settings
+          },
+        ),
+      ],
+    );
+  }
+
+  void _showResetConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.md),
+            ),
+            title: const Text('Reset Preferences'),
+            content: const Text(
+              'This will reset all your content preferences to default. This action cannot be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  // Handle reset preferences
+                  setState(() {
+                    _personalizedRecommendations = true;
+                    _showTrending = true;
+                    _adultContent = false;
+                    _sensitiveContent = false;
+                    _contentDiversity = 1;
+                    _interests.forEach((key, value) {
+                      _interests[key] = false;
+                    });
+                    _interests['Technology'] = true;
+                    _interests['Entertainment'] = true;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Preferences have been reset'),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text(
+                  'Reset',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required IconData icon,
+    required Color iconColor,
+    required List<Widget> children,
+    String? description,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.md,
+              horizontal: AppSpacing.sm,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.xs),
+                      decoration: BoxDecoration(
+                        color: iconColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, color: iconColor, size: 16),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Text(
+                      title,
+                      style: context.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                if (description != null) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    description,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppSpacing.md),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(children: children),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSwitchTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColor.secondaryContainer.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: AppColor.primary),
+      ),
+      title: Text(
+        title,
+        style: context.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+      ),
+      trailing: Switch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: AppColor.primary,
+      ),
+    );
+  }
+
+  Widget _buildActionTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColor.secondaryContainer.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: AppColor.primary),
+      ),
+      title: Text(
+        title,
+        style: context.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+      ),
+      trailing: const Icon(IconlyLight.arrow_right_2, size: 18),
+      onTap: onTap,
+    );
+  }
+}

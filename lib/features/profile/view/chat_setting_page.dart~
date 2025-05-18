@@ -1,0 +1,594 @@
+import 'package:chat_flutter/shared/color/app_color.dart';
+import 'package:chat_flutter/shared/spacing/app_spacing.dart';
+import 'package:chat_flutter/shared/theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
+
+class ChatSettingPage extends StatefulWidget {
+  const ChatSettingPage({super.key});
+
+  static const String routePath = '/chat-setting';
+
+  @override
+  State<ChatSettingPage> createState() => _ChatSettingPageState();
+}
+
+class _ChatSettingPageState extends State<ChatSettingPage> {
+  // Chat preferences
+  bool _autoPlayMedia = true;
+  bool _saveMedia = true;
+  bool _typing = true;
+  int _selectedFontSize = 1;
+  int _selectedTheme = 0;
+  int _selectedBubbleStyle = 1;
+
+  // Notification settings
+  bool _messageNotification = true;
+  bool _messagePreview = true;
+  bool _groupNotification = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text(
+          'Chat Settings',
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(IconlyLight.arrow_left_2),
+          onPressed: () => Navigator.pop(context),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.grey[100],
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            _buildChatStyler(),
+            _buildMediaSection(),
+            _buildNotificationSection(),
+            _buildChatExperienceSection(),
+            _buildAdvancedSection(),
+            const SizedBox(height: AppSpacing.xxl),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatStyler() {
+    return Container(
+      margin: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.deepPurple,
+            Colors.blue,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  IconlyBold.chat,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  'Chat Appearance',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // Open full chat customization page
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(AppSpacing.lg),
+                  ),
+                  child: Text(
+                    'Customize',
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Theme',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: Colors.white.withOpacity(0.8),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildThemeOption(0, Colors.blue, 'Default'),
+                _buildThemeOption(1, Colors.purple, 'Twilight'),
+                _buildThemeOption(2, Colors.green, 'Mint'),
+                _buildThemeOption(3, Colors.orange, 'Sunset'),
+                _buildThemeOption(4, Colors.pink, 'Blossom'),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Bubble Style',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: Colors.white.withOpacity(0.8),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildBubbleOption(0, 'Modern'),
+                _buildBubbleOption(1, 'Rounded'),
+                _buildBubbleOption(2, 'Classic'),
+                _buildBubbleOption(3, 'Minimal'),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Font Size',
+            style: context.textTheme.bodySmall?.copyWith(
+              color: Colors.white.withOpacity(0.8),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Row(
+            children: [
+              Text(
+                'A',
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Expanded(
+                child: Slider(
+                  value: _selectedFontSize.toDouble(),
+                  min: 0,
+                  max: 2,
+                  divisions: 2,
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.white.withOpacity(0.3),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedFontSize = value.toInt();
+                    });
+                  },
+                ),
+              ),
+              Text(
+                'A',
+                style: context.textTheme.titleLarge?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeOption(int index, Color color, String label) {
+    final isSelected = _selectedTheme == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedTheme = index;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(AppSpacing.lg),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              label,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: isSelected ? color : Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBubbleOption(int index, String label) {
+    final isSelected = _selectedBubbleStyle == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedBubbleStyle = index;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(right: AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(AppSpacing.lg),
+        ),
+        child: Text(
+          label,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: isSelected ? Colors.blue : Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMediaSection() {
+    return _buildSection(
+      title: 'Media',
+      icon: IconlyBold.image,
+      iconColor: Colors.amber,
+      children: [
+        _buildSwitchTile(
+          title: 'Auto-play Media',
+          subtitle: 'Automatically play videos and GIFs',
+          icon: IconlyLight.play,
+          value: _autoPlayMedia,
+          onChanged: (value) {
+            setState(() {
+              _autoPlayMedia = value;
+            });
+          },
+        ),
+        _buildSwitchTile(
+          title: 'Save Media',
+          subtitle: 'Automatically save received photos to gallery',
+          icon: IconlyLight.download,
+          value: _saveMedia,
+          onChanged: (value) {
+            setState(() {
+              _saveMedia = value;
+            });
+          },
+        ),
+        _buildActionTile(
+          title: 'Media Quality',
+          subtitle: 'Configure quality settings for media sharing',
+          icon: IconlyLight.filter,
+          onTap: () {
+            // Navigate to media quality settings
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotificationSection() {
+    return _buildSection(
+      title: 'Notifications',
+      icon: IconlyBold.notification,
+      iconColor: Colors.red,
+      children: [
+        _buildSwitchTile(
+          title: 'Message Notifications',
+          subtitle: 'Get notified when you receive messages',
+          icon: IconlyLight.message,
+          value: _messageNotification,
+          onChanged: (value) {
+            setState(() {
+              _messageNotification = value;
+            });
+          },
+        ),
+        _buildSwitchTile(
+          title: 'Message Preview',
+          subtitle: 'Show message content in notifications',
+          icon: IconlyLight.show,
+          value: _messagePreview,
+          onChanged: (value) {
+            setState(() {
+              _messagePreview = value;
+            });
+          },
+        ),
+        _buildSwitchTile(
+          title: 'Group Notifications',
+          subtitle: 'Get notified for group messages',
+          icon: IconlyLight.user_1,
+          value: _groupNotification,
+          onChanged: (value) {
+            setState(() {
+              _groupNotification = value;
+            });
+          },
+        ),
+        _buildActionTile(
+          title: 'Sound & Vibration',
+          subtitle: 'Customize notification sounds and vibrations',
+          icon: IconlyLight.volume_up,
+          onTap: () {
+            // Navigate to sound settings
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChatExperienceSection() {
+    return _buildSection(
+      title: 'Chat Experience',
+      icon: IconlyBold.chat,
+      iconColor: Colors.green,
+      children: [
+        _buildSwitchTile(
+          title: 'Typing Indicator',
+          subtitle: 'Show when others are typing',
+          icon: IconlyLight.edit,
+          value: _typing,
+          onChanged: (value) {
+            setState(() {
+              _typing = value;
+            });
+          },
+        ),
+        _buildActionTile(
+          title: 'Chat Backup',
+          subtitle: 'Back up your chat history to the cloud',
+          icon: IconlyLight.upload,
+          onTap: () {
+            // Navigate to backup settings
+          },
+        ),
+        _buildActionTile(
+          title: 'Chat History',
+          subtitle: 'Manage or clear your chat history',
+          icon: IconlyLight.time_circle,
+          onTap: () {
+            // Navigate to chat history
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAdvancedSection() {
+    return _buildSection(
+      title: 'Advanced',
+      icon: IconlyBold.setting,
+      iconColor: Colors.purple,
+      children: [
+        _buildActionTile(
+          title: 'Keyboard Settings',
+          subtitle: 'Customize keyboard shortcuts and emoji access',
+          icon: IconlyLight.bookmark,
+          onTap: () {
+            // Navigate to keyboard settings
+          },
+        ),
+        _buildActionTile(
+          title: 'Language & Translation',
+          subtitle: 'Set chat language and translation preferences',
+          icon: IconlyLight.document,
+          onTap: () {
+            // Navigate to language settings
+          },
+        ),
+        _buildActionTile(
+          title: 'Advanced Security',
+          subtitle: 'End-to-end encryption and security options',
+          icon: IconlyLight.lock,
+          onTap: () {
+            // Navigate to advanced security settings
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required IconData icon,
+    required Color iconColor,
+    required List<Widget> children,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.md,
+              horizontal: AppSpacing.sm,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  decoration: BoxDecoration(
+                    color: iconColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: iconColor, size: 16),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  title,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppSpacing.md),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              children: children,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSwitchTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColor.secondaryContainer.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: AppColor.primary),
+      ),
+      title: Text(
+        title,
+        style: context.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: context.textTheme.bodySmall?.copyWith(
+          color: Colors.grey[600],
+        ),
+      ),
+      trailing: Switch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: AppColor.primary,
+      ),
+    );
+  }
+
+  Widget _buildActionTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColor.secondaryContainer.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: AppColor.primary),
+      ),
+      title: Text(
+        title,
+        style: context.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: context.textTheme.bodySmall?.copyWith(
+          color: Colors.grey[600],
+        ),
+      ),
+      trailing: const Icon(IconlyLight.arrow_right_2, size: 18),
+      onTap: onTap,
+    );
+  }
+}

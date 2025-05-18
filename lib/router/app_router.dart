@@ -1,0 +1,60 @@
+import 'package:chat_flutter/features/login/view/login_page.dart';
+import 'package:chat_flutter/features/navigation/view/navigation_page.dart';
+import 'package:chat_flutter/features/profile/view/about_page.dart';
+import 'package:chat_flutter/features/profile/view/chat_setting_page.dart';
+import 'package:chat_flutter/features/profile/view/content_preferences_page.dart';
+import 'package:chat_flutter/features/profile/view/personal_info_page.dart';
+import 'package:chat_flutter/features/profile/view/privacy_and_security_page.dart';
+import 'package:chat_flutter/features/profile/view/profile_page.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class AppRouter {
+  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
+  static final GoRouter router = GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: LoginPage.routePath,
+    debugLogDiagnostics: true,
+    routes: [
+      GoRoute(
+        path: NavigationPage.routePath,
+        builder: (context, state) => const NavigationPage(),
+      ),
+      GoRoute(
+        path: LoginPage.routePath,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: ProfilePage.routePath,
+        builder: (context, state) => const ProfilePage(),
+      ),
+      GoRoute(
+        path: PersonalInfoPage.routePath,
+        builder: (context, state) => const PersonalInfoPage(),
+      ),
+      GoRoute(
+        path: PrivacyAndSecurityPage.routePath,
+        builder: (context, state) => const PrivacyAndSecurityPage(),
+      ),
+      GoRoute(
+        path: ChatSettingPage.routePath,
+        builder: (context, state) => const ChatSettingPage(),
+      ),
+      GoRoute(
+        path: ContentPreferencesPage.routePath,
+        builder: (context, state) => const ContentPreferencesPage(),
+      ),
+      GoRoute(
+        path: AboutPage.routePath,
+        builder: (context, state) => const AboutPage(),
+      ),
+    ],
+    errorBuilder:
+        (context, state) => Scaffold(
+          body: Center(
+            child: Text('No route defined for ${state.uri.toString()}'),
+          ),
+        ),
+  );
+}

@@ -1,0 +1,531 @@
+import 'package:chat_flutter/shared/color/app_color.dart';
+import 'package:chat_flutter/shared/spacing/app_spacing.dart';
+import 'package:chat_flutter/shared/theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
+
+class PrivacyAndSecurityPage extends StatefulWidget {
+  const PrivacyAndSecurityPage({super.key});
+
+  static const String routePath = '/privacy-and-security';
+
+  @override
+  State<PrivacyAndSecurityPage> createState() => _PrivacyAndSecurityPageState();
+}
+
+class _PrivacyAndSecurityPageState extends State<PrivacyAndSecurityPage> {
+  bool _twoFactorAuth = false;
+  bool _biometricLogin = true;
+  bool _showOnlineStatus = true;
+  bool _readReceipts = true;
+  bool _dataSharing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text(
+          'Privacy & Security',
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            _buildSecurityBanner(),
+            _buildSecuritySection(),
+            _buildPrivacySection(),
+            _buildDataSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSecurityBanner() {
+    return Container(
+      margin: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColor.primary, AppColor.primary.withOpacity(0.8)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppSpacing.md),
+        boxShadow: [
+          BoxShadow(
+            color: AppColor.primary.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              IconlyBold.shield_done,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Account Protection',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Your account security level is Good',
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              IconlyLight.arrow_right_2,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSecuritySection() {
+    return _buildSection(
+      title: 'Security',
+      icon: IconlyBold.lock,
+      iconColor: Colors.blue,
+      children: [
+        _buildSwitchTile(
+          title: 'Two-Factor Authentication',
+          subtitle: 'Add an extra layer of security to your account',
+          icon: IconlyLight.shield_done,
+          value: _twoFactorAuth,
+          onChanged: (value) {
+            setState(() {
+              _twoFactorAuth = value;
+              if (value) {
+                _showSetupDialog();
+              }
+            });
+          },
+        ),
+        _buildSwitchTile(
+          title: 'Biometric Login',
+          subtitle: 'Use fingerprint or face recognition to login',
+          icon: IconlyLight.scan,
+          value: _biometricLogin,
+          onChanged: (value) {
+            setState(() {
+              _biometricLogin = value;
+            });
+          },
+        ),
+        _buildActionTile(
+          title: 'Change Password',
+          subtitle: 'Last changed 30 days ago',
+          icon: IconlyLight.password,
+          onTap: () {
+            // Navigate to change password screen
+          },
+        ),
+        _buildActionTile(
+          title: 'Login Activity',
+          subtitle: 'Check where you\'re logged in',
+          icon: IconlyLight.login,
+          onTap: () {
+            // Navigate to login activity screen
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacySection() {
+    return _buildSection(
+      title: 'Privacy',
+      icon: IconlyBold.user_2,
+      iconColor: Colors.purple,
+      children: [
+        _buildSwitchTile(
+          title: 'Online Status',
+          subtitle: 'Show when you are active on the app',
+          icon: IconlyLight.activity,
+          value: _showOnlineStatus,
+          onChanged: (value) {
+            setState(() {
+              _showOnlineStatus = value;
+            });
+          },
+        ),
+        _buildSwitchTile(
+          title: 'Read Receipts',
+          subtitle: 'Let others know when you\'ve read their messages',
+          icon: IconlyLight.tick_square,
+          value: _readReceipts,
+          onChanged: (value) {
+            setState(() {
+              _readReceipts = value;
+            });
+          },
+        ),
+        _buildActionTile(
+          title: 'Blocked Users',
+          subtitle: 'Manage your blocked contacts list',
+          icon: IconlyLight.close_square,
+          onTap: () {
+            // Navigate to blocked users screen
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDataSection() {
+    return _buildSection(
+      title: 'Data & Storage',
+      icon: IconlyBold.chart,
+      iconColor: Colors.green,
+      children: [
+        _buildSwitchTile(
+          title: 'Data Sharing',
+          subtitle: 'Share usage data to help improve the app',
+          icon: IconlyLight.graph,
+          value: _dataSharing,
+          onChanged: (value) {
+            setState(() {
+              _dataSharing = value;
+            });
+          },
+        ),
+        _buildActionTile(
+          title: 'Storage Usage',
+          subtitle: '128MB used of local storage',
+          icon: IconlyLight.document,
+          onTap: () {
+            // Navigate to storage management screen
+          },
+        ),
+        _buildActionTile(
+          title: 'Download My Data',
+          subtitle: 'Get a copy of your personal data',
+          icon: IconlyLight.download,
+          onTap: () {
+            _showDownloadDialog();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required IconData icon,
+    required Color iconColor,
+    required List<Widget> children,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppSpacing.md,
+              horizontal: AppSpacing.sm,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.xs),
+                  decoration: BoxDecoration(
+                    color: iconColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: iconColor, size: 16),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  title,
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppSpacing.md),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(children: children),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSwitchTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColor.secondaryContainer.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: AppColor.primary),
+      ),
+      title: Text(
+        title,
+        style: context.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+      ),
+      trailing: Switch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: AppColor.primary,
+      ),
+    );
+  }
+
+  Widget _buildActionTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColor.secondaryContainer.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: AppColor.primary),
+      ),
+      title: Text(
+        title,
+        style: context.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: context.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+      ),
+      trailing: const Icon(IconlyLight.arrow_right_2, size: 18),
+      onTap: onTap,
+    );
+  }
+
+  void _showSetupDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.md),
+            ),
+            title: const Text('Set Up Two-Factor Authentication'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColor.primary.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    IconlyBold.shield_done,
+                    color: AppColor.primary,
+                    size: 40,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                const Text(
+                  'Choose your preferred authentication method to add an extra layer of security to your account.',
+                ),
+                const SizedBox(height: AppSpacing.md),
+                _buildOptionButton(
+                  icon: IconlyLight.message,
+                  title: 'SMS Verification',
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to SMS verification setup
+                  },
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _buildOptionButton(
+                  icon: IconlyLight.scan,
+                  title: 'Authentication App',
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to authentication app setup
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _twoFactorAuth = false;
+                  });
+                },
+                child: const Text('Cancel'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  Widget _buildOptionButton({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppSpacing.sm),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[300]!),
+          borderRadius: BorderRadius.circular(AppSpacing.sm),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColor.primary),
+            const SizedBox(width: AppSpacing.md),
+            Text(
+              title,
+              style: context.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Spacer(),
+            const Icon(IconlyLight.arrow_right_2, size: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDownloadDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.md),
+            ),
+            title: const Text('Download Your Data'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    IconlyBold.download,
+                    color: Colors.blue,
+                    size: 40,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                const Text(
+                  'Your data will be prepared for download. This process may take a few minutes. You\'ll receive a notification when your data is ready.',
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Your data request has been submitted'),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.primary,
+                ),
+                child: const Text(
+                  'Request Download',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+}
